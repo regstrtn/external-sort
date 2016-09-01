@@ -1,3 +1,4 @@
+from __future__ import print_function
 import os
 
 QSIZE = 25
@@ -31,6 +32,8 @@ def writesorted(fp, offsets, depq, start, pos1, pos2, end):
 				#write from start to pos1, then depq, then pos2 to end
 
 def writetemp(fp, left, right, depq, offsets, start, pos1, pos2, end):
+				for line in right:
+								print(line)
 				fw = open("newfile", "w")
 				fp.seek(offsets[start])
 				linesread = 0
@@ -59,8 +62,7 @@ def sortrecursively(fp,offsets,start, pos1, pos2, end):
 				depq = []
 				linesread = 0
 				fp.seek(offsets[pos1])
-				if(pos2-pos1<QSIZE):
-								print("Less than 100")
+				if(pos2-pos1<=QSIZE):
 								while (linesread < (pos2-pos1)):
 												linestr = fp.readline()
 												depq.append(linestr)
@@ -70,16 +72,19 @@ def sortrecursively(fp,offsets,start, pos1, pos2, end):
 								fp = writesorted(fp, offsets, depq, start, pos1, pos2, end)
 								pass
 				else:
+								print("is greater than QSIZE")
 								while (linesread<QSIZE):
 												linestr = fp.readline()
 												depq.append(linestr)
 												linesread += 1
 								depq.sort()
-								left = open("left", "w+")
-								right = open("right", "w+")
+								left = open("left", "r+")
+								right = open("right", "r+")
 								leftlines = 0
 								rightlines = 0
 								while (linesread<(pos2-pos1)):
+												print("hello word")
+												right.write("hello world")
 												linestr = fp.readline()
 												linesread +=1
 												if linestr<depq[0]:
@@ -92,15 +97,14 @@ def sortrecursively(fp,offsets,start, pos1, pos2, end):
 																right.write(depq[-1])
 																depq[-1] = linestr
 																depq.sort()
+																#print(depq[-1], end = "")
 																rightlines+=1
 								fp = writetemp(fp, left, right, depq, offsets, start, pos1, pos2, end)
-								sortrecursively(fp, offsets, start, pos1, pos1+leftlines, end)
-								sortrecursively(fp, offsets, start, pos1+leftlines+QSIZE, pos2, end)
+								#sortrecursively(fp, offsets, start, pos1, pos1+leftlines, end)
+								#sortrecursively(fp, offsets, start, pos1+leftlines+QSIZE, pos2, end)
 								#store. make left. make right.
 								#call sort on left. call sort on right.
 				fp.seek(offsets[pos2])
-				for line in fp:
-								print(line)
 				fp.close()
 
 
