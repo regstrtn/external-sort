@@ -1,9 +1,9 @@
 from __future__ import print_function
 import os
 
-QSIZE = 3 
+QSIZE = 2 
 def main():
-				sortlargefile("w1.txt");
+				sortlargefile("w2.txt");
 
 def sortlargefile(filename):
 				fp = open(filename, "r+")
@@ -15,7 +15,7 @@ def sortlargefile(filename):
 def writesorted(fp, offsets, depq, start, pos1, pos2, end):
 				if(pos1 == pos2): return fp
 				print("Writesort called with parameters ",start, pos1, pos2, end)
-				fw = open("newfile", "w")
+				fw = open("newfile", "w+")
 				fp.seek(0)
 				offsets = getlineoffsets(fp)
 				linesread = 0
@@ -31,7 +31,11 @@ def writesorted(fp, offsets, depq, start, pos1, pos2, end):
 								fp.seek(offsets[pos2])
 								for linestr in fp:
 												fw.write(linestr)
+				fw.seek(0)
 				fw.close()
+				fw = open("newfile", "r")
+				for line in fw:
+								print("FW: "+line, end = "")
 				os.rename("newfile", "oldfile")
 				fp = open("oldfile", "r")
 				return fp
@@ -62,12 +66,16 @@ def writetemp(fp, depq, offsets, start, pos1, pos2, end):
 								for linestr in fp:
 												fw.write(linestr)
 
+				fw.seek(0)
+				for line in fw:
+								print("FW: "+line, end = "")
 				fw.close()
 				os.rename("newfile", "oldfile")
 				fp = open("oldfile", "r")
 				return fp
 
 def sortrecursively(fp, offsets, start, pos1, pos2, end):
+				sortrecursively.counter +=1
 				print("Sort called with parameters ",start, pos1, pos2, end)
 				offsets = getlineoffsets(fp)
 				if(pos1==pos2):
@@ -85,7 +93,6 @@ def sortrecursively(fp, offsets, start, pos1, pos2, end):
 								#just store sort and return
 								depq.sort()
 								fp = writesorted(fp, offsets, depq, start, pos1, pos2, end)
-								pass
 				else:
 								while (linesread<QSIZE):
 												linestr = fp.readline()
@@ -121,6 +128,7 @@ def sortrecursively(fp, offsets, start, pos1, pos2, end):
 				#fp.seek(offsets[pos2])
 				#fp.close()
 
+sortrecursively.counter = 0
 def getlines(fp):
 				fp.seek(0);
 				lines = 0
