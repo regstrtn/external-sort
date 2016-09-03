@@ -3,7 +3,7 @@ import os
 
 QSIZE = 2 
 def main():
-				sortlargefile("w2.txt");
+				sortlargefile("w1.txt");
 
 def sortlargefile(filename):
 				fp = open(filename, "r+")
@@ -36,6 +36,7 @@ def writesorted(fp, offsets, depq, start, pos1, pos2, end):
 				fw = open("newfile", "r")
 				for line in fw:
 								print("FW: "+line, end = "")
+				fw.close()
 				os.rename("newfile", "oldfile")
 				fp = open("oldfile", "r")
 				return fp
@@ -75,10 +76,9 @@ def writetemp(fp, depq, offsets, start, pos1, pos2, end):
 				return fp
 
 def sortrecursively(fp, offsets, start, pos1, pos2, end):
-				sortrecursively.counter +=1
 				print("Sort called with parameters ",start, pos1, pos2, end)
 				offsets = getlineoffsets(fp)
-				if(pos1==pos2):
+				if(pos2-pos1<=1):
 								return
 				depq = []
 				linesread = 0
@@ -126,7 +126,7 @@ def sortrecursively(fp, offsets, start, pos1, pos2, end):
 								#store. make left. make right.
 								#call sort on left. call sort on right.
 				#fp.seek(offsets[pos2])
-				#fp.close()
+				fp.close()
 
 sortrecursively.counter = 0
 def getlines(fp):
